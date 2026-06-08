@@ -1,0 +1,69 @@
+
+keyboard
+	movlw 0x00
+	movwf currkey	;we are looking at the first key everytime we restart
+	movlw 0x20
+	movwf FSR ;set keypointer
+			  ;This might be at a bad point
+			 
+ 	movlw 0x01
+	movwf PORTB ;Let's look at all of the first keys
+				;in each set of 6 keys
+nextkey
+	movf PORTA, W	;Lets see if there is anything on PORTA
+	btfss STATUS, Z
+	goto newnote	;if there is we have a note!
+nextkey1
+	btfsc PORTB, RB2	;If the 3rd bit is set then we have to skip to the
+	 goto keyspecial
+	bcf STATUS, C
+	incf currkey, f	;Next time we come around we will be looking at the next key
+	rlf PORTB, 1
+	btfss PORTB, RB7
+	 goto nextkey
+	goto keyboard
+
+keyspecial			;if we are on bit three, we need to hop up to
+	movlw 0x10		;bit 5. Bit 4 of PORTB is reserved for PWM output.
+	movwf PORTB
+	goto nextkey
+
+;newnote
+	movlw 0x00
+	movwf currsixth			;We always start out looking at the first sixth
+	movlw 0x08
+	subwf curr_channels, W	;Make sure we have channels left
+							;prolly gonna ditch this and let someone else take care
+							;of curr_channels
+	btfsc STATUS, Z
+	goto nextkey1
+	movlw 0x01
+	movwf bitmask
+newnote1
+	btfsc bitmask, 7 ;Did we just look at the last possible key group?
+					;This is fucked, will miss one set of keys
+					;maybe instead check to see if bitmask is 0
+	goto nextkey1
+
+	movf PORTA, W
+	andwf bitmask, W	;Mask PORTA to see if the key was in this sixth
+	bcf STATUS, C		;Clearing carry to make sure out bitmask remains pristine
+	rlf bitmask, 1
+
+	btfsc STATUS, 2		;Is the bit we just tested empty?
+	goto nextsixth		;if so we need to increase the currsixth
+						;and go back to newnote1
+	;call frequencylookup
+	movlw 0x06
+	addwf currsixth, 1	;Next time we are gonna look at next sixth
+						;we need current sixth inside the lookup
+	movf curr_channels, W
+	sublw 8
+	btfsc STATUS, Z
+	goto nextkey1
+	goto newnote1
+
+nextsixth	;Next time we are gonna look at next sixth
+	movlw 0x06
+	addwf currsixth, 1
+	goto newnote1

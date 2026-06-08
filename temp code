@@ -1,0 +1,87 @@
+	
+	Key3Th ;Ticks whole part high.
+	Key3Tl ;Ticks decimal part.
+	Key3Curr
+	Key3State
+	
+	Key4Th ;Ticks whole part high.
+	Key4Tl ;Ticks decimal part.
+	Key4Curr
+	Key4State
+
+	Key5Th ;Ticks whole part high.
+	Key5Tl ;Ticks decimal part.
+	Key5Curr
+	Key5State
+	
+	Key6Th ;Ticks whole part high.
+	Key6Tl ;Ticks decimal part.
+	Key6Curr
+	Key6State
+	
+	Key7Th ;Ticks whole part high.
+	Key7Tl ;Ticks decimal part.
+	Key7Curr
+	Key7State
+	
+	Key8Th ;Ticks whole part high.
+	Key8Tl ;Ticks decimal part.
+	Key8Curr
+	Key8State
+
+20 000 000 cycles (20 000 000 operations per second) MCU
+     8 000 cycles (8000 updates per second)          Sample rate
+every2 500 cycles we the PWM register needs to be set.
+
+10 Channels = 10 levels of PWM for square wave piano.
+
+       440 cycles per second = piano A440
+     8 000 cycles (updates per second)
+440 / 8 000
+	  .055 forward per cycle
+	
+	High 9 cycles low 9 cycles
+	
+	   880 / 8 000
+	
+	High 4.5 Cycles Low 4.5 cycles.  Everytime we press a new note, we see how long that note stays High.  Start a counter.  After that many samples we toggle.
+	
+	
+20 000 000 cycles (20 000 000 operations per second) MCU
+    16 000 cycles (16000 updates per second)       Sample rate
+every1 250 cycles we the PWM register needs to be set.
+
+8 Channels = 8 levels of PWM for square wave piano.
+
+       440 cycles per second = piano A440
+    16 000 cycles (updates per second)
+440 / 8 000
+	.055 forward per cycle
+	
+	16 000 / 440
+	
+	High 18 cycles low 18 cycles
+	
+466.164
+	16 000 / 466.164
+	
+	High 17 Cycles low 17 cycles
+
+	880 / 8 000
+	
+	16 000 / 440
+	
+	High 9 Cycles Low 9 cycles.  Everytime we press a new note, we see how long that note stays High.  Start a counter.  After that many samples we toggle.
+	
+	
+40 000 sample rate.
+
+every 500 cpu cycles we need to update the PWM register.
+
+40 000 / 440
+
+	high 45 low 45
+	
+40 000 / 880
+
+	high 22 low 22
